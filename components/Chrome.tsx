@@ -66,7 +66,7 @@ export function Header({ current, total, label, inverted }: { current: number; t
     >
       <div className="mx-auto flex max-w-[34rem] items-center justify-between gap-4">
         <div>
-          <p className="label">Made with love by Ikenga</p>
+          <p className="label">Built by Ikenga</p>
           <Progress current={current} total={total} label={label} inverted={inverted} />
         </div>
         <SoundToggle inverted={inverted} />

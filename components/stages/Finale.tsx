@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkle } from "../ui/Sparkle";
 import { StageHeading } from "../ui/StageHeading";
@@ -8,6 +8,7 @@ import { useSound } from "../SoundProvider";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const pop = { type: "spring", stiffness: 380, damping: 17 } as const;
+const AUTO_REVEAL_MS = 12000;
 
 export function Finale({ onRestart }: { onRestart: () => void }) {
   const { play } = useSound();
@@ -18,6 +19,16 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
     setFound(true);
     play("chime");
   };
+
+  // If she never finds the star, the P.S. shows up on its own.
+  useEffect(() => {
+    if (found) return;
+    const timer = setTimeout(() => {
+      setFound(true);
+      play("chime");
+    }, AUTO_REVEAL_MS);
+    return () => clearTimeout(timer);
+  }, [found, play]);
 
   const line = (delay: number) => ({
     initial: { opacity: 0, y: 14 },
@@ -34,20 +45,38 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
       </motion.div>
 
       <motion.p {...line(0.35)} className="mt-6 text-[clamp(42px,13vw,58px)] leading-[0.9] font-extrabold tracking-[-0.04em]">
-        Amarachi, you&apos;re{" "}
-        <span className="text-pink [text-shadow:3px_3px_0_var(--color-ink)]">genuinely beautiful.</span>
+        Amarachi, you have a{" "}
+        <span className="text-pink [text-shadow:3px_3px_0_var(--color-ink)]">genuinely beautiful smile.</span>
       </motion.p>
 
       <motion.p {...line(0.75)} className="mt-6 text-[19px] leading-snug font-medium">
-        But I think the fun part is getting to know the person behind the face.
+        But I think the fun part is getting to know the person behind it.
       </motion.p>
 
       <motion.p {...line(1.1)} className="mt-4 text-[17px] leading-snug text-white/80">
         Anyway, that&apos;s all. Don&apos;t let this website make you too proud.
       </motion.p>
 
-      {/* the tiny hidden star */}
-      <motion.div {...line(2)} className="relative mt-12 flex justify-end pr-[18%]">
+      {/* the tiny hidden star, with a nudge so it isn't missed */}
+      <motion.div {...line(2)} className="relative mt-12 flex items-center justify-end gap-1 pr-[12%]">
+        <AnimatePresence>
+          {!found && (
+            <motion.p
+              aria-hidden="true"
+              initial={{ opacity: 0, x: -6, rotate: 0 }}
+              animate={{ opacity: 1, x: 0, rotate: -4 }}
+              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.5, delay: 2.4 }}
+              className="flex items-center gap-1.5 font-hand text-[24px] leading-none font-bold text-white"
+            >
+              psst… tap the star
+              <svg viewBox="0 0 40 20" className="h-4 w-8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 12 C12 4 24 4 36 10" />
+                <path d="M29 5 L36 10 L29 14" />
+              </svg>
+            </motion.p>
+          )}
+        </AnimatePresence>
         <button
           type="button"
           onClick={reveal}
@@ -56,7 +85,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
           className="relative flex h-11 w-11 items-center justify-center rounded-full"
         >
           <span className={found ? "" : "tiny-star"} style={{ display: "inline-flex", color: "#FF4FA3" }}>
-            <Sparkle className="h-3.5 w-3.5" />
+            <Sparkle className="h-5 w-5" />
           </span>
           {found && (
             <motion.span
@@ -110,7 +139,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
                 >
                   <Sparkle className="h-5 w-5 text-pink" />
                   <span className="label text-[9px] leading-tight">
-                    Made by
+                    Built by
                     <br />
                     Ikenga
                   </span>
