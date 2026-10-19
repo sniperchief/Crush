@@ -1,0 +1,363 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #09090d;
+  --color-pink: #ff3d9a;
+  --color-violet: #c8b8ff;
+  --color-ivory: #f6f0e8;
+  --font-display: var(--font-instrument), "Times New Roman", serif;
+  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-pink);
+  color: var(--color-ink);
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:disabled,
+button[aria-disabled="true"] {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-violet);
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+
+/* ---------- surfaces ---------- */
+
+.grain {
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.aura {
+  transform: translate(-50%, -50%);
+  transition:
+    left 2.4s cubic-bezier(0.22, 1, 0.36, 1),
+    top 2.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 2s ease;
+  animation: aura-drift 18s ease-in-out infinite alternate;
+}
+
+.chrome-text {
+  background-image: linear-gradient(
+    100deg,
+    #8d8a96 0%,
+    #f6f0e8 16%,
+    #a19db0 30%,
+    #ffffff 44%,
+    #c8b8ff 58%,
+    #6f6b7d 72%,
+    #f6f0e8 86%,
+    #a7a3b3 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: chrome-sheen 9s linear infinite;
+  /* keep descenders/italics from clipping */
+  padding: 0 0.04em 0.06em;
+}
+
+.chrome-ring {
+  position: relative;
+  isolation: isolate;
+}
+.chrome-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #ffffff 0%, #8b8797 28%, #f6f0e8 48%, #4f4c59 68%, #c8b8ff 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.btn-glow {
+  box-shadow:
+    0 0 0 1px rgba(255, 61, 154, 0.4),
+    0 10px 40px -8px rgba(255, 61, 154, 0.75),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.btn-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 61, 154, 0.6),
+    0 14px 54px -6px rgba(255, 61, 154, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- stars ---------- */
+
+.twinkle {
+  opacity: var(--o, 0.6);
+  animation-name: twinkle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.star-spin {
+  animation: star-spin 14s linear infinite;
+}
+
+.star-idle {
+  animation: star-idle 2.4s ease-in-out infinite;
+}
+
+.star-breathe {
+  animation: star-breathe 3.6s ease-in-out infinite;
+}
+
+.tiny-star {
+  animation: tiny-star 3.2s ease-in-out infinite;
+}
+
+.touch-spark {
+  width: 0;
+  height: 0;
+}
+.touch-spark-ring {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  animation: spark-ring 0.7s ease-out forwards;
+}
+.touch-spark-star {
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 6px currentColor);
+  animation: spark-star 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.float-chip {
+  animation: float-chip 5s ease-in-out infinite;
+}
+
+.scan-line {
+  animation: scan 1.6s ease-in-out infinite alternate;
+}
+
+.glitch {
+  animation: glitch 0.5s steps(2) 3;
+}
+
+/* ---------- cake ---------- */
+
+.flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flicker 1.6s ease-in-out infinite;
+}
+
+.candle-hint {
+  box-shadow: 0 0 0 1px rgba(200, 184, 255, 0.35);
+  animation: candle-hint 2.2s ease-out infinite;
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: var(--o, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    opacity: calc(var(--o, 0.6) * 0.25);
+    transform: scale(0.7);
+  }
+}
+
+@keyframes float-chip {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -4px;
+  }
+}
+
+@keyframes scan {
+  from {
+    top: 2%;
+  }
+  to {
+    top: 97%;
+  }
+}
+
+@keyframes glitch {
+  0% {
+    filter: drop-shadow(-4px 0 0 rgba(255, 61, 154, 0.8)) drop-shadow(4px 0 0 rgba(200, 184, 255, 0.8));
+    transform: translateX(-3px) skewX(-2deg);
+  }
+  50% {
+    filter: drop-shadow(4px 0 0 rgba(255, 61, 154, 0.8)) drop-shadow(-4px 0 0 rgba(200, 184, 255, 0.8)) hue-rotate(40deg);
+    transform: translateX(3px) skewX(2deg);
+  }
+  100% {
+    filter: none;
+    transform: none;
+  }
+}
+
+@keyframes chrome-sheen {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 220% 50%;
+  }
+}
+
+@keyframes aura-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 4vmax -3vmax;
+  }
+}
+
+@keyframes star-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes star-idle {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 1;
+  }
+}
+
+@keyframes star-breathe {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(8deg);
+  }
+}
+
+@keyframes tiny-star {
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  82% {
+    transform: scale(1.8) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+@keyframes spark-ring {
+  from {
+    transform: scale(0.2);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes spark-star {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1.1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.2) rotate(30deg) translateY(-10px);
+    opacity: 0;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1, 1) rotate(0deg);
+  }
+  25% {
+    transform: scale(0.94, 1.06) rotate(-2deg);
+  }
+  50% {
+    transform: scale(1.04, 0.95) rotate(1.5deg);
+  }
+  75% {
+    transform: scale(0.97, 1.04) rotate(-1deg);
+  }
+}
+
+@keyframes candle-hint {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
