@@ -2,43 +2,34 @@
 
 import { useSound } from "./SoundProvider";
 
-export function Progress({ current, total, label }: { current: number; total: number; label: string }) {
+function Progress({ current, total, label, inverted }: { current: number; total: number; label: string; inverted: boolean }) {
+  const solid = inverted ? "#fff" : "var(--color-ink)";
   return (
-    <div className="flex items-center gap-3">
-      <div
-        role="progressbar"
-        aria-label="Progress"
-        aria-valuemin={1}
-        aria-valuemax={total}
-        aria-valuenow={current + 1}
-        aria-valuetext={`Part ${current + 1} of ${total}: ${label}`}
-        className="flex items-center gap-1.5"
-      >
-        {Array.from({ length: total }, (_, i) => (
-          <span
-            key={i}
-            className="h-[3px] rounded-full transition-all duration-700 ease-out"
-            style={{
-              width: i === current ? 22 : 8,
-              background:
-                i < current
-                  ? "rgba(246,240,232,0.55)"
-                  : i === current
-                    ? "var(--color-pink)"
-                    : "rgba(246,240,232,0.14)",
-              boxShadow: i === current ? "0 0 10px rgba(255,61,154,0.8)" : "none",
-            }}
-          />
-        ))}
-      </div>
-      <span aria-hidden="true" className="font-mono text-[0.6rem] tracking-[0.24em] text-ivory/45 tabular-nums">
-        0{current + 1} / 0{total}
-      </span>
+    <div
+      role="progressbar"
+      aria-label="Page"
+      aria-valuemin={1}
+      aria-valuemax={total}
+      aria-valuenow={current + 1}
+      aria-valuetext={`Page ${current + 1} of ${total}: ${label}`}
+      className="mt-1.5 flex items-center gap-1.5"
+    >
+      {Array.from({ length: total }, (_, i) => (
+        <span
+          key={i}
+          className="h-1.5 transition-[width,background] duration-500"
+          style={{
+            width: i === current ? 18 : 6,
+            background: i === current ? (inverted ? "#fff" : "var(--color-blue)") : i < current ? solid : "transparent",
+            boxShadow: i > current ? `inset 0 0 0 1.2px ${solid}` : "none",
+          }}
+        />
+      ))}
     </div>
   );
 }
 
-export function SoundToggle() {
+function SoundToggle({ inverted }: { inverted: boolean }) {
   const { enabled, toggle } = useSound();
   return (
     <button
@@ -46,9 +37,11 @@ export function SoundToggle() {
       onClick={toggle}
       aria-pressed={enabled}
       aria-label={enabled ? "Sound on. Turn sound off" : "Sound off. Turn sound on"}
-      className="chrome-ring -mr-1 inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-full bg-white/[0.03] px-3 text-ivory/70 backdrop-blur-sm transition-colors hover:text-ivory"
+      className={`inline-flex h-11 items-center gap-2 rounded-full border-[1.5px] px-4 ${
+        inverted ? "border-white text-white" : "border-ink text-ink"
+      }`}
     >
-      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor" stroke="none" />
         {enabled ? (
           <>
@@ -59,9 +52,25 @@ export function SoundToggle() {
           <path d="M16 9.5l5 5M21 9.5l-5 5" />
         )}
       </svg>
-      <span className="hidden font-sans text-[0.6rem] tracking-[0.28em] uppercase sm:inline">
-        {enabled ? "Sound" : "Muted"}
-      </span>
+      <span className="label">{enabled ? "On" : "Off"}</span>
     </button>
+  );
+}
+
+export function Header({ current, total, label, inverted }: { current: number; total: number; label: string; inverted: boolean }) {
+  return (
+    <header
+      className={`sticky top-0 z-30 border-b-[1.5px] px-4 py-[14px] transition-colors duration-500 ${
+        inverted ? "border-white bg-blue text-white" : "border-ink bg-paper text-ink"
+      }`}
+    >
+      <div className="mx-auto flex max-w-[34rem] items-center justify-between gap-4">
+        <div>
+          <p className="label">Made with love by Ikenga</p>
+          <Progress current={current} total={total} label={label} inverted={inverted} />
+        </div>
+        <SoundToggle inverted={inverted} />
+      </div>
+    </header>
   );
 }

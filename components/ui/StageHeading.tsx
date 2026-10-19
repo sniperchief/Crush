@@ -31,11 +31,15 @@ export function StageHeading({
 }
 
 export function Eyebrow({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <p className={`label text-muted ${className}`}>{children}</p>;
+}
+
+/** The mono running head at the top of each page. */
+export function TopRow({ left, right, className = "" }: { left: ReactNode; right: ReactNode; className?: string }) {
   return (
-    <p
-      className={`font-mono text-[0.62rem] font-medium tracking-[0.32em] text-violet/80 uppercase ${className}`}
-    >
-      {children}
-    </p>
+    <div className={`label flex items-center justify-between gap-4 text-muted ${className}`}>
+      <span>{left}</span>
+      <span className="text-right">{right}</span>
+    </div>
   );
 }

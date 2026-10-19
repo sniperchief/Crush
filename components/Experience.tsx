@@ -3,9 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { SoundProvider } from "./SoundProvider";
-import { Starfield } from "./Starfield";
 import { TouchSparkles } from "./TouchSparkles";
-import { Progress, SoundToggle } from "./Chrome";
+import { Header } from "./Chrome";
 import { Opening } from "./stages/Opening";
 import { FaceScanner } from "./stages/FaceScanner";
 import { RunawayButton } from "./stages/RunawayButton";
@@ -34,40 +33,35 @@ export function Experience() {
 
   const next = () => goTo(stage + 1);
   const last = STAGE_NAMES.length - 1;
+  const backCover = stage === last;
 
   return (
     <MotionConfig reducedMotion="user">
       <SoundProvider>
-        <Starfield stage={stage} dim={stage === STAGE_NAMES.length - 1} />
-        <div aria-hidden="true" className="grain pointer-events-none fixed inset-0 z-[1]" />
-        <TouchSparkles />
+        <div className={`min-h-dvh transition-colors duration-500 ${backCover ? "bg-blue" : "bg-paper"}`}>
+          <TouchSparkles />
+          <Header current={stage} total={STAGE_NAMES.length} label={STAGE_NAMES[stage]} inverted={backCover} />
 
-        <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-4 pt-[max(env(safe-area-inset-top),0.75rem)] pb-3 sm:px-8 sm:pt-6">
-          <motion.div animate={{ opacity: stage === last ? 0.45 : 1 }} transition={{ duration: 1.2 }}>
-            <Progress current={stage} total={STAGE_NAMES.length} label={STAGE_NAMES[stage]} />
-          </motion.div>
-          <SoundToggle />
-        </header>
-
-        <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-3xl flex-col items-center justify-center px-4 pt-20 pb-12 sm:px-8 sm:pt-24">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.section
-              key={stage}
-              aria-label={STAGE_NAMES[stage]}
-              className="w-full"
-              initial={{ opacity: 0, y: 28, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -18, filter: "blur(8px)", transition: { duration: 0.3, ease: "easeIn" } }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {stage === 0 && <Opening onNext={next} />}
-              {stage === 1 && <FaceScanner onNext={next} />}
-              {stage === 2 && <RunawayButton onNext={next} />}
-              {stage === 3 && <Birthday onNext={next} />}
-              {stage === last && <Finale onRestart={() => goTo(0)} />}
-            </motion.section>
-          </AnimatePresence>
-        </main>
+          <main className="relative mx-auto w-full max-w-[34rem] overflow-x-clip px-4 pt-5 pb-10">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.section
+                key={stage}
+                aria-label={STAGE_NAMES[stage]}
+                className="w-full origin-bottom-left"
+                initial={{ opacity: 0, x: 70, rotate: 2 }}
+                animate={{ opacity: 1, x: 0, rotate: 0 }}
+                exit={{ opacity: 0, x: -70, rotate: -1.5, transition: { duration: 0.28, ease: "easeIn" } }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {stage === 0 && <Opening onNext={next} />}
+                {stage === 1 && <FaceScanner onNext={next} />}
+                {stage === 2 && <RunawayButton onNext={next} />}
+                {stage === 3 && <Birthday onNext={next} />}
+                {stage === last && <Finale onRestart={() => goTo(0)} />}
+              </motion.section>
+            </AnimatePresence>
+          </main>
+        </div>
       </SoundProvider>
     </MotionConfig>
   );

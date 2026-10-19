@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export type ConfettiShot = { key: number; x: number; y: number };
 
-const COLORS = ["#FF3D9A", "#C8B8FF", "#F6F0E8", "#FFB3D6", "#D9D6E0"];
+const COLORS = ["#1F4FD8", "#FF4FA3", "#FFD23F", "#16161D"];
 
 /** Lightweight canvas confetti. Fires once each time `shot.key` changes. */
 export function Confetti({ shot }: { shot: ConfettiShot | null }) {

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { SPARKLE_PATH } from "./ui/Sparkle";
 
-type Spark = { id: number; x: number; y: number; hue: "pink" | "violet" };
+type Spark = { id: number; x: number; y: number; hue: "pink" | "blue" };
 
 /** A small star blooms wherever the screen is touched or clicked. */
 export function TouchSparkles() {
@@ -17,7 +17,7 @@ export function TouchSparkles() {
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const onDown = (e: PointerEvent) => {
       const id = ++idRef.current;
-      const spark: Spark = { id, x: e.clientX, y: e.clientY, hue: id % 3 === 0 ? "violet" : "pink" };
+      const spark: Spark = { id, x: e.clientX, y: e.clientY, hue: id % 2 === 0 ? "blue" : "pink" };
       setSparks((s) => [...s.slice(-6), spark]);
       const timer = setTimeout(() => {
         setSparks((s) => s.filter((p) => p.id !== id));
@@ -41,7 +41,7 @@ export function TouchSparkles() {
           style={{
             left: s.x,
             top: s.y,
-            color: s.hue === "pink" ? "var(--color-pink)" : "var(--color-violet)",
+            color: s.hue === "pink" ? "var(--color-pink)" : "var(--color-blue)",
           }}
         >
           <span className="touch-spark-ring" />

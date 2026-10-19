@@ -4,17 +4,19 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { PrimaryButton } from "../ui/Buttons";
 import { Sparkle } from "../ui/Sparkle";
-import { Eyebrow, StageHeading } from "../ui/StageHeading";
+import { StageHeading, TopRow } from "../ui/StageHeading";
 import { useSound } from "../SoundProvider";
 
-type Particle = { id: number; x: number; y: number; size: number; rot: number; pink: boolean };
+type Particle = { id: number; x: number; y: number; size: number; rot: number; blue: boolean; square: boolean };
 
 const ease = [0.22, 1, 0.36, 1] as const;
+const pop = { type: "spring", stiffness: 420, damping: 16 } as const;
 
 export function Opening({ onNext }: { onNext: () => void }) {
   const reduce = useReducedMotion();
   const { play } = useSound();
   const [particles, setParticles] = useState<Particle[] | null>(null);
+  const leaving = !!particles;
 
   const start = () => {
     if (particles) return;
@@ -26,100 +28,102 @@ export function Opening({ onNext }: { onNext: () => void }) {
     setParticles(
       Array.from({ length: 22 }, (_, i) => {
         const angle = (i / 22) * Math.PI * 2 + Math.random() * 0.4;
-        const dist = 70 + Math.random() * 150;
+        const dist = 80 + Math.random() * 150;
         return {
           id: i,
           x: Math.cos(angle) * dist,
           y: Math.sin(angle) * dist,
-          size: 4 + Math.random() * 10,
+          size: 6 + Math.random() * 10,
           rot: Math.random() * 180,
-          pink: Math.random() > 0.4,
+          blue: Math.random() > 0.5,
+          square: Math.random() > 0.6,
         };
       }),
     );
     window.setTimeout(onNext, 620);
   };
 
-  return (
-    <div className="flex flex-col items-center text-center">
-      <div className="relative mb-10 flex h-20 w-20 items-center justify-center">
-        <motion.span
-          className="absolute inset-0 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(255,61,154,0.45), transparent 65%)" }}
-          animate={particles ? { scale: 3.2, opacity: 0 } : { scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
-          transition={particles ? { duration: 0.6, ease } : { duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.span
-          initial={{ scale: 0, rotate: -90, opacity: 0 }}
-          animate={particles ? { scale: 0, rotate: 135, opacity: 0 } : { scale: 1, rotate: 0, opacity: 1 }}
-          transition={{ duration: particles ? 0.35 : 1.1, ease }}
-          className="relative text-ivory"
-          style={{ filter: "drop-shadow(0 0 10px #FF3D9A) drop-shadow(0 0 22px rgba(255,61,154,0.6))" }}
-        >
-          <Sparkle className="star-spin h-9 w-9" />
-        </motion.span>
-        {particles?.map((p) => (
-          <motion.span
-            key={p.id}
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2"
-            initial={{ x: "-50%", y: "-50%", scale: 1, opacity: 1, rotate: 0 }}
-            animate={{ x: `calc(-50% + ${p.x}px)`, y: `calc(-50% + ${p.y}px)`, scale: 0, opacity: 0, rotate: p.rot }}
-            transition={{ duration: 0.75, ease }}
-            style={{ color: p.pink ? "#FF3D9A" : "#C8B8FF" }}
-          >
-            <Sparkle style={{ width: p.size, height: p.size }} />
-          </motion.span>
-        ))}
-      </div>
+  const fade = (delay: number) => ({
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: leaving ? 0 : 1, y: 0 },
+    transition: { duration: leaving ? 0.3 : 0.6, delay: leaving ? 0 : delay, ease },
+  });
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: particles ? 0 : 1, y: 0 }}
-        transition={{ duration: particles ? 0.4 : 0.8, delay: particles ? 0 : 0.35, ease }}
-      >
-        <Eyebrow className="mb-6">A small transmission · for</Eyebrow>
+  return (
+    <div className="relative flex min-h-[calc(100dvh-9rem)] flex-col">
+      {/* halftone print marks */}
+      <div aria-hidden="true" className="halftone-pink pointer-events-none absolute -top-16 -right-24 h-60 w-60 rounded-full opacity-50" />
+      <div aria-hidden="true" className="halftone-blue pointer-events-none absolute bottom-40 -left-10 h-28 w-28 opacity-40" />
+
+      <motion.div {...fade(0)}>
+        <TopRow left="A small transmission" right="Oct 2026" />
       </motion.div>
 
-      <StageHeading as="h1" autoFocus={false} className="flex flex-col items-center">
+      <motion.p {...fade(0.1)} className="hand mt-8 -rotate-3 text-[30px]">
+        for —
+      </motion.p>
+
+      <StageHeading as="h1" autoFocus={false} className="relative mt-2">
+        <span className="sr-only">Amarachi</span>
         <motion.span
-          initial={{ opacity: 0, y: 30, letterSpacing: "0.12em" }}
-          animate={{ opacity: particles ? 0 : 1, y: 0, letterSpacing: "-0.02em" }}
-          transition={{ duration: particles ? 0.4 : 1.3, delay: particles ? 0.05 : 0.45, ease }}
-          className="chrome-text block font-display text-[clamp(3.6rem,21vw,11.5rem)] leading-[0.9]"
+          aria-hidden="true"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: leaving ? 0 : 1, x: 0 }}
+          transition={{ duration: leaving ? 0.3 : 0.7, delay: leaving ? 0 : 0.2, ease }}
+          className="headline block text-[clamp(64px,23.5vw,112px)] [text-shadow:4px_4px_0_var(--color-pink)]"
         >
-          Amarachi,
-        </motion.span>
-        <motion.span
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: particles ? 0 : 1, y: 0 }}
-          transition={{ duration: particles ? 0.35 : 0.9, delay: particles ? 0.1 : 0.9, ease }}
-          className="mt-4 block font-display text-[clamp(1.6rem,7.4vw,3rem)] leading-tight text-ivory italic"
-        >
-          this is slightly random.
+          AMA
+          <br />
+          RA
+          <br />
+          CHI.
         </motion.span>
       </StageHeading>
 
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: particles ? 0 : 1, y: 0 }}
-        transition={{ duration: particles ? 0.3 : 0.8, delay: particles ? 0.12 : 1.25, ease }}
-        className="mt-6 max-w-[22rem] font-sans text-[0.98rem] leading-relaxed text-ivory/65"
-      >
-        I made you something. Don&apos;t worry, it&apos;s not weird.{" "}
-        <span className="whitespace-nowrap text-violet">Probably.</span>
-      </motion.p>
+      <div className="relative mt-7 flex items-center gap-4">
+        <motion.p {...fade(0.45)} className="flex-1 text-[22px] leading-[1.15] font-medium text-ink">
+          This is slightly random. I made you something.
+        </motion.p>
+        <motion.div
+          initial={{ scale: 0, rotate: -30 }}
+          animate={leaving ? { scale: 0, rotate: 40 } : { scale: 1, rotate: 12 }}
+          transition={leaving ? { duration: 0.25 } : { ...pop, delay: 0.7 }}
+          className="flex h-[104px] w-[104px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink bg-pink p-3 text-center shadow-[3px_3px_0_#16161D]"
+        >
+          <span className="font-hand text-[21px] leading-[0.95] font-bold text-ink">
+            not weird.
+            <br />
+            (probably)
+          </span>
+        </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: particles ? 0 : 1, y: 0 }}
-        transition={{ duration: particles ? 0.25 : 0.8, delay: particles ? 0.15 : 1.5, ease }}
-        className="mt-11"
-      >
-        <PrimaryButton onClick={start} disabled={!!particles}>
-          LET&apos;S SEE
-          <Sparkle className="h-3 w-3 transition-transform duration-300 group-hover:rotate-90" />
-        </PrimaryButton>
+      <motion.div {...fade(0.6)} className="mt-auto pt-10">
+        <div className="border-t-[1.5px] border-dashed border-ink pt-3">
+          <p className="label text-muted">5 pages · approx. 2 min · sound: yes</p>
+        </div>
+        <div className="relative mt-4">
+          <PrimaryButton onClick={start} disabled={leaving}>
+            Open it
+          </PrimaryButton>
+          {particles?.map((p) => (
+            <motion.span
+              key={p.id}
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-1/2"
+              initial={{ x: "-50%", y: "-50%", scale: 1, opacity: 1, rotate: 0 }}
+              animate={{ x: `calc(-50% + ${p.x}px)`, y: `calc(-50% + ${p.y}px)`, scale: 0, opacity: 0, rotate: p.rot }}
+              transition={{ duration: 0.75, ease }}
+              style={{ color: p.blue ? "#1F4FD8" : "#FF4FA3" }}
+            >
+              {p.square ? (
+                <span className="block border-[1.5px] border-ink bg-current" style={{ width: p.size, height: p.size }} />
+              ) : (
+                <Sparkle style={{ width: p.size, height: p.size }} />
+              )}
+            </motion.span>
+          ))}
+        </div>
       </motion.div>
     </div>
   );

@@ -1,22 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Bricolage_Grotesque, Caveat, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-});
-
-const sans = Space_Grotesk({
-  variable: "--font-grotesk",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
 });
 
-const mono = JetBrains_Mono({
-  variable: "--font-jetbrains",
+const mono = DM_Mono({
+  variable: "--font-dmmono",
   subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const hand = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -26,14 +26,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#09090D",
-  colorScheme: "dark",
+  themeColor: "#F6F5F0",
+  colorScheme: "light",
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`}>
+    <html lang="en" className={`${bricolage.variable} ${mono.variable} ${hand.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );
