@@ -139,7 +139,7 @@ export function RunawayButton({ onNext }: { onNext: () => void }) {
             rotate: catchable ? 0 : tries * 9 - 6,
             scale: done ? [1, 1.2, 1] : 1,
           }}
-          transition={{ type: "spring", stiffness: 520, damping: 28 }}
+          transition={{ type: "spring", stiffness: 520, damping: 28, scale: { duration: 0.45, ease } }}
         >
           YES
         </motion.button>
