@@ -10,13 +10,13 @@ import { useSound } from "../SoundProvider";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const READINGS = [
-  { label: "Face detected", value: "Yes. Obviously." },
-  { label: "Smile", value: "Dangerous" },
-  { label: "Resting face", value: "Detected. It's just how she is." },
-  { label: "Style", value: "Effortless" },
+  { label: "Face detected", value: "Yes." },
+  { label: "Smile", value: "Not bad." },
+  { label: "Resting face", value: "Strongly detected." },
+  { label: "Style", value: "Passed inspection." },
 ];
 
-// Phases: idle → scanning (readings tick in) → measuring cuteness → error
+// Phases: idle → scanning (readings tick in) → measuring cuteness → result withheld
 const READING_MS = 750;
 const MEASURE_MS = 1900;
 
@@ -55,7 +55,7 @@ export function FaceScanner({ onNext }: { onNext: () => void }) {
         left="Lab report no. 002"
         right={
           <span className={broken ? "text-stamp" : "text-blue"}>
-            <span className={scanning ? "blink" : ""}>●</span> {broken ? "Error" : scanning ? "Scanning" : "Ready"}
+            <span className={scanning ? "blink" : ""}>●</span> {broken ? "Withheld" : scanning ? "Scanning" : "Ready"}
           </span>
         }
       />
@@ -105,12 +105,12 @@ export function FaceScanner({ onNext }: { onNext: () => void }) {
                 animate={{ scale: 1, rotate: -14, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 420, damping: 15 }}
               >
-                <span className="text-[40px] leading-[0.85] font-extrabold tracking-[-0.04em]">
-                  TOO
+                <span className="text-center text-[30px] leading-[0.85] font-extrabold tracking-[-0.04em]">
+                  RESULT
                   <br />
-                  PRETTY
+                  WITHHELD
                 </span>
-                <span className="label mt-1.5 text-[9px] whitespace-nowrap">Scanner overheated</span>
+                <span className="label mt-1.5 text-[9px] whitespace-nowrap">Ego protection mode</span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -160,7 +160,7 @@ export function FaceScanner({ onNext }: { onNext: () => void }) {
                     animate={{ opacity: [0, 0, 1] }}
                     transition={{ duration: MEASURE_MS / 1000, times: [0, 0.7, 1] }}
                   >
-                    160% ?!
+                    Withheld
                   </motion.span>
                 </div>
                 <div className="relative mt-2 w-[72%]">
@@ -176,7 +176,7 @@ export function FaceScanner({ onNext }: { onNext: () => void }) {
                     <motion.div
                       className="absolute top-[-1.5px] bottom-[-1.5px] left-[-1.5px] border-[1.5px] border-ink bg-pink"
                       initial={{ width: "0%" }}
-                      animate={{ width: "160%" }}
+                      animate={{ width: "94%" }}
                       transition={{ duration: MEASURE_MS / 1000, ease: "easeIn" }}
                     />
                   </div>
@@ -193,9 +193,9 @@ export function FaceScanner({ onNext }: { onNext: () => void }) {
 
         {broken && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3, ease }}>
-            <p className="label text-stamp">Error 404 · chill not found</p>
-            <p className="headline mt-3 text-[clamp(34px,10vw,46px)]">Subject too pretty. Machine gave up.</p>
-            <p className="hand mt-4 -rotate-2 text-[28px]">We&apos;ll just take your word for it.</p>
+            <p className="label text-stamp">Notice · ego protection mode on</p>
+            <p className="headline mt-3 text-[clamp(34px,10vw,46px)]">Results withheld. For your own good.</p>
+            <p className="hand mt-4 -rotate-2 text-[28px]">You&apos;d only get big-headed.</p>
             <div className="mt-6">
               <ContinueButton onClick={onNext} />
             </div>

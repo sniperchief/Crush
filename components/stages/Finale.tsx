@@ -46,11 +46,11 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
 
       <motion.p {...line(0.35)} className="mt-6 text-[clamp(42px,13vw,58px)] leading-[0.9] font-extrabold tracking-[-0.04em]">
         Amarachi, you have a{" "}
-        <span className="text-pink [text-shadow:3px_3px_0_var(--color-ink)]">genuinely beautiful smile.</span>
+        <span className="text-pink [text-shadow:3px_3px_0_var(--color-ink)]">nice smile.</span>
       </motion.p>
 
       <motion.p {...line(0.75)} className="mt-6 text-[19px] leading-snug font-medium">
-        But I think the fun part is getting to know the person behind it.
+        I&apos;ll give you that. But I think the fun part is getting to know the person behind it.
       </motion.p>
 
       <motion.p {...line(1.1)} className="mt-4 text-[17px] leading-snug text-white/80">
@@ -111,7 +111,7 @@ export function Finale({ onRestart }: { onRestart: () => void }) {
               >
                 <span aria-hidden="true" className="tape -top-3 left-1/2 -translate-x-1/2 rotate-[3deg]" />
                 <p className="font-hand text-[27px] leading-[1.05] font-bold">
-                  P.S. You can keep the website. The compliments were non-refundable.
+                  P.S. You can keep the website. That was your compliment quota for the month.
                 </p>
               </motion.div>
 

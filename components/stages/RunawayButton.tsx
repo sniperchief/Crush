@@ -229,7 +229,7 @@ export function RunawayButton({ onNext }: { onNext: () => void }) {
         <AnimatePresence mode="wait">
           {done ? (
             <motion.div key="done" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease }}>
-              <p className="text-[24px] leading-tight font-bold text-ink">Correct answer. Confidence looks good on you.</p>
+              <p className="text-[24px] leading-tight font-bold text-ink">Fine. You can have that one. Don&apos;t get used to it.</p>
               <div className="mt-6">
                 <ContinueButton onClick={onNext} />
               </div>

@@ -10,6 +10,11 @@ import { Portal } from "../ui/Portal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const INK = "#16161D";
+const BIRTHDAY = new Date(2026, 9, 1);
+
+function daysLate() {
+  return Math.max(1, Math.floor((Date.now() - BIRTHDAY.getTime()) / 86_400_000));
+}
 
 function Cake({ lit }: { lit: boolean }) {
   return (
@@ -108,6 +113,7 @@ export function Birthday({ onNext }: { onNext: () => void }) {
   const { play } = useSound();
   const [lit, setLit] = useState(true);
   const [shot, setShot] = useState<ConfettiShot | null>(null);
+  const [late] = useState(daysLate);
   const candleRef = useRef<HTMLButtonElement>(null);
 
   const blow = () => {
@@ -146,7 +152,9 @@ export function Birthday({ onNext }: { onNext: () => void }) {
           </div>
           <div className="px-3.5 py-2.5">
             <p className="label text-muted">Status:</p>
-            <p className="text-[18px] font-bold text-stamp">18 days late</p>
+            <p className="text-[18px] font-bold text-stamp">
+              {late} {late === 1 ? "day" : "days"} late
+            </p>
           </div>
         </div>
       </motion.div>
